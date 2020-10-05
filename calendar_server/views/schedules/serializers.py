@@ -1,11 +1,6 @@
 from rest_framework import serializers
-from calendar_server.models import Schedules, SchedulesTags, Tags
-
-
-class TagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tags
-        fields = '__all__'
+from calendar_server.models import Schedules, SchedulesTags
+from calendar_server.views.tags.serializers import TagSerializer
 
 
 class SchedulesTagsSerializer(serializers.ModelSerializer):
