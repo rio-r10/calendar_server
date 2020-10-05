@@ -4,7 +4,7 @@ from calendar_server.views.tags.serializers import TagSerializer
 
 
 class SchedulesTagsSerializer(serializers.ModelSerializer):
-    tag_id = TagSerializer()
+    tag = TagSerializer()
 
     class Meta:
         model = SchedulesTags
@@ -17,3 +17,11 @@ class SchedulesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Schedules
         fields = '__all__'
+
+
+class ScheduleRequestSerializer(serializers.Serializer):
+    text = serializers.CharField()
+    date = serializers.CharField(max_length=10, min_length=10)
+    tags = serializers.ListField(
+        child=serializers.IntegerField()
+    )

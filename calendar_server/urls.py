@@ -15,13 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from calendar_server.views.schedules.views import SchedulesViews
+from calendar_server.views.schedules.views import SchedulesViews, ScheduleViews
 from calendar_server.views.tags.views import TagsViews, TagViews
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # apis
     path('api/v1/schedules/', SchedulesViews.as_view(), name='schedules'),
+    path('api/v1/schedule/', ScheduleViews.as_view(), name='schedule'),
     path('api/v1/tags/', TagsViews.as_view(), name='tags'),
     path('api/v1/tag/', TagViews.as_view(), name='tag'),
 ]
