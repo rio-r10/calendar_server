@@ -1,12 +1,15 @@
 from django.db.models import Prefetch
+from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from dateutil.relativedelta import relativedelta
+from django.shortcuts import get_object_or_404
 import datetime
 from rest_framework.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
     HTTP_400_BAD_REQUEST,
+    HTTP_204_NO_CONTENT,
 )
 from calendar_server.models import Schedules, SchedulesTags, Tags
 from calendar_server.views.schedules.serializers import SchedulesSerializer, ScheduleRequestSerializer
@@ -22,16 +25,13 @@ class SchedulesViews(APIView):
 
         prefetch_tags = Prefetch(
             'schedule_tags',
-            SchedulesTags.objects.all().select_related('tag'),
+            SchedulesTags.objects.filter(tag__deleted_at=None).select_related('tag'),
             'tags'
         )
         schedules = Schedules.objects.filter(date__gte=start_date, date__lt=end_date, deleted_at=None).prefetch_related(prefetch_tags)
         serializer = SchedulesSerializer(schedules, many=True)
 
         return Response(status=HTTP_200_OK, data=serializer.data)
-
-
-class ScheduleViews(APIView):
 
     def post(self, request):
         request_serializer = ScheduleRequestSerializer(data=request.data)
@@ -63,3 +63,15 @@ class ScheduleViews(APIView):
         SchedulesTags.objects.bulk_create(schedule_tags)
 
         return Response(status=HTTP_201_CREATED, data='作成しました')
+
+
+class ScheduleViews(APIView):
+    def delete(self, request, id):
+        # スケジュールが存在するか確認
+        schedule = get_object_or_404(Schedules, id=id)
+
+        schedule.deleted_at = timezone.now()
+        schedule.save()
+
+        return Response(status=HTTP_204_NO_CONTENT, data='削除しました')
+

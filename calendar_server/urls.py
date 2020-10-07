@@ -22,7 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # apis
     path('api/v1/schedules/', SchedulesViews.as_view(), name='schedules'),
-    path('api/v1/schedule/', ScheduleViews.as_view(), name='schedule'),
+    path('api/v1/schedule/<int:id>/', ScheduleViews.as_view(), name='schedule'),
     path('api/v1/tags/', TagsViews.as_view(), name='tags'),
-    path('api/v1/tag/', TagViews.as_view(), name='tag'),
+    path('api/v1/tag/<int:id>/', TagViews.as_view(), name='tag'),
 ]
